@@ -1,0 +1,260 @@
+.city-detail {
+  padding: 2rem;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.city-detail-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: #764ba2;
+  transform: rotate(90deg);
+}
+
+.detail-header {
+  text-align: center;
+  padding: 1rem 0 2rem;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 2rem;
+}
+
+.detail-city-name {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.current-weather {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.detail-weather-icon {
+  width: 120px;
+  height: 120px;
+}
+
+.current-temp {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.detail-description {
+  font-size: 1.3rem;
+  color: #555;
+  text-transform: capitalize;
+}
+
+.detailed-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.stat-icon {
+  font-size: 2rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.forecast-section {
+  margin-bottom: 3rem;
+}
+
+.forecast-section h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #667eea;
+}
+
+.hourly-forecast {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+.hour-item {
+  min-width: 120px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 1rem;
+  border-radius: 15px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.hour-time {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.hour-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.hour-temp {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #667eea;
+  margin: 0.5rem 0;
+}
+
+.hour-detail {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0.2rem 0;
+}
+
+.daily-forecast {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.day-item {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 1.5rem;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.day-item:hover {
+  transform: translateY(-5px);
+}
+
+.day-date {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.day-icon {
+  width: 70px;
+  height: 70px;
+}
+
+.day-temp {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.temp-max {
+  color: #d32f2f;
+}
+
+.temp-min {
+  color: #1976d2;
+}
+
+.day-description {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.5rem 0;
+  text-transform: capitalize;
+}
+
+.day-details {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.loading-forecast {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .city-detail-content {
+    padding: 1.5rem;
+  }
+
+  .detail-city-name {
+    font-size: 2rem;
+  }
+
+  .current-temp {
+    font-size: 3rem;
+  }
+
+  .detailed-stats {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .hourly-forecast {
+    gap: 0.5rem;
+  }
+
+  .hour-item {
+    min-width: 100px;
+  }
+
+  .daily-forecast {
+    grid-template-columns: 1fr;
+  }
+}
