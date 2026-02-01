@@ -1,15 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchCity, clearSearchResults } from '../features/weatherSlice';
 import { toggleTemperatureUnit } from '../features/settingsSlice';
+import { clearSearchResults, searchCity } from '../features/weatherSlice';
 import './Header.css';
 
 const Header = ({ onCitySelect }) => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
-  const searchResults = useSelector(state => state.weather.searchResults);
-  const temperatureUnit = useSelector(state => state.settings.temperatureUnit);
+  const searchResults = useSelector((state) => state.weather.searchResults);
+  const temperatureUnit = useSelector(
+    (state) => state.settings.temperatureUnit
+  );
   const [showResults, setShowResults] = useState(false);
+  const error = useSelector((state) => state.weather.error);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -37,39 +40,46 @@ const Header = ({ onCitySelect }) => {
   };
 
   return (
-    <header className="header">
-      <div className="header-content">
-        <h1 className="header-title">🌤️ Weather Analytics Dashboard</h1>
-        
-        <div className="header-controls">
-          <div className="search-container">
+    <header className='header'>
+      <div className='header-content'>
+        <h1 className='header-title'>🌤️ Weather Analytics Dashboard</h1>
+
+        <div className='header-controls'>
+          <div className='search-container'>
             <input
-              type="text"
-              placeholder="Search cities..."
+              type='text'
+              placeholder='Search cities...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
+              className='search-input'
             />
-            
-            {showResults && searchResults.length > 0 && (
-              <div className="search-results">
-                {searchResults.map((city) => (
-                  <div
-                    key={city.id}
-                    className="search-result-item"
-                    onClick={() => handleCitySelect(city)}
-                  >
-                    <div className="city-name">{city.name}</div>
-                    <div className="city-info">
-                      {city.state && `${city.state}, `}{city.country}
+
+            {showResults && (
+              <div className='search-results'>
+                {error ? (
+                  <div className='search-error'>{error}</div>
+                ) : searchResults.length > 0 ? (
+                  searchResults.map((city) => (
+                    <div
+                      key={city.id}
+                      className='search-result-item'
+                      onClick={() => handleCitySelect(city)}
+                    >
+                      <div className='city-name'>{city.name}</div>
+                      <div className='city-info'>
+                        {city.state && `${city.state}, `}
+                        {city.country}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <div className='search-empty'>No results</div>
+                )}
               </div>
             )}
           </div>
 
-          <button onClick={handleToggleUnit} className="unit-toggle">
+          <button onClick={handleToggleUnit} className='unit-toggle'>
             °{temperatureUnit === 'celsius' ? 'C' : 'F'}
           </button>
         </div>

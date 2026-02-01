@@ -5,30 +5,35 @@ A comprehensive weather analytics dashboard built with React (Hooks) and Redux T
 ## Features
 
 ### 🌟 Core Features
+
 - **Real-time Weather Data**: Display current weather for multiple cities with automatic refresh every 60 seconds
 - **Multi-City Dashboard**: View weather cards for multiple cities simultaneously
 - **Detailed City View**: Click any city to see detailed information including:
   - 5-7 day weather forecast
   - Hourly forecast (24 hours)
   - Detailed statistics (pressure, visibility, cloudiness, sunrise/sunset)
-  
+
 ### 🔍 Search & Favorites
+
 - **Smart Search**: API-powered autocomplete for city search
 - **Favorites Management**: Save favorite cities with localStorage persistence
 - **Quick Access**: Favorite cities are automatically displayed on the dashboard
 
 ### 📊 Analytics & Charts
+
 - **Temperature Trends**: Line charts showing min, max, and average temperatures
 - **Precipitation Analysis**: Bar charts for rainfall and probability
 - **Wind Speed Trends**: Track wind patterns over time
 - **Humidity Monitoring**: Visualize humidity changes
 
 ### ⚙️ Settings & Preferences
+
 - **Temperature Unit Toggle**: Switch between Celsius and Fahrenheit
 - **Data Caching**: Intelligent caching reduces API calls (60-second cache duration)
 - **Persistent Settings**: User preferences saved to localStorage
 
 ### 🎨 User Experience
+
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
 - **Modern UI**: Beautiful gradient backgrounds and smooth animations
 - **Intuitive Navigation**: Easy-to-use interface with clear visual hierarchy
@@ -54,26 +59,32 @@ A comprehensive weather analytics dashboard built with React (Hooks) and Redux T
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/tambeaditya101/Weather-Analytics-Dashboard.git
 cd Weather-Analytics-Dashboard
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Configure the API key:
-   - Copy `.env.example` to `.env`
-   - Replace `your_api_key_here` with your actual OpenWeatherMap API key
-   
+
+- Create a local `.env` file in the project root (do NOT commit this file).
+- Add your OpenWeatherMap API key using the Vite prefix `VITE_WEATHER_API_KEY`:
+
 ```bash
-cp .env.example .env
-# Edit .env and add your API key
+# .env (example)
+VITE_WEATHER_API_KEY=your_actual_openweathermap_api_key_here
 ```
 
+- Restart the dev server after creating/updating `.env` so Vite picks up the variable.
+
 4. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -119,20 +130,26 @@ Weather-Analytics-Dashboard/
 ## Features in Detail
 
 ### Caching Mechanism
+
 The application implements a smart caching system:
+
 - API responses are cached for 60 seconds
 - Reduces unnecessary API calls
 - Improves performance and respects API rate limits
 - Ensures data freshness with automatic refresh
 
 ### State Management
+
 Redux Toolkit is used for efficient state management:
+
 - **Weather Slice**: Manages weather data, forecasts, and search results
 - **Settings Slice**: Handles user preferences (favorites, temperature unit)
 - Persistent state using localStorage
 
 ### Responsive Design
+
 The dashboard adapts to different screen sizes:
+
 - Desktop: Multi-column grid layout
 - Tablet: Optimized 2-column layout
 - Mobile: Single-column layout with touch-friendly controls
@@ -140,6 +157,7 @@ The dashboard adapts to different screen sizes:
 ## API Integration
 
 The application integrates with OpenWeatherMap API:
+
 - Current Weather Data API
 - 5 Day / 3 Hour Forecast API
 - Geocoding API for city search

@@ -1,7 +1,15 @@
 import axios from 'axios';
 
-// Using OpenWeatherMap API - You should replace this with your actual API key
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY || '3ac3e88af7b6e4b18e8ed4b8e23e4b3a';
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+const ensureApiKey = () => {
+  if (!API_KEY) {
+    throw new Error(
+      'Missing OpenWeatherMap API key. Set VITE_WEATHER_API_KEY in your .env file.'
+    );
+  }
+  return API_KEY;
+};
+
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 
@@ -32,11 +40,12 @@ export const fetchWeatherData = async (cityName, lat, lon) => {
   if (cached) return cached;
 
   try {
+    const key = ensureApiKey();
     let url;
     if (lat && lon) {
-      url = `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+      url = `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
     } else {
-      url = `${BASE_URL}/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
+      url = `${BASE_URL}/weather?q=${cityName}&appid=${key}&units=metric`;
     }
 
     const response = await axios.get(url);
@@ -66,7 +75,15 @@ export const fetchWeatherData = async (cityName, lat, lon) => {
     setCachedData(cacheKey, weatherData);
     return weatherData;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch weather data');
+    const status = error.response?.status;
+    if (status === 401) {
+      throw new Error(
+        'OpenWeatherMap API Unauthorized (401). Check your VITE_WEATHER_API_KEY.'
+      );
+    }
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch weather data'
+    );
   }
 };
 
@@ -76,18 +93,19 @@ export const fetchForecastData = async (cityName, lat, lon) => {
   if (cached) return cached;
 
   try {
+    const key = ensureApiKey();
     let url;
     if (lat && lon) {
-      url = `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+      url = `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${key}&units=metric`;
     } else {
-      url = `${BASE_URL}/forecast?q=${cityName}&appid=${API_KEY}&units=metric`;
+      url = `${BASE_URL}/forecast?q=${cityName}&appid=${key}&units=metric`;
     }
 
     const response = await axios.get(url);
     const data = response.data;
 
     // Process hourly forecast (3-hour intervals)
-    const hourlyForecast = data.list.slice(0, 8).map(item => ({
+    const hourlyForecast = data.list.slice(0, 8).map((item) => ({
       dt: item.dt,
       temp: item.main.temp,
       feels_like: item.main.feels_like,
@@ -106,7 +124,7 @@ export const fetchForecastData = async (cityName, lat, lon) => {
 
     // Process daily forecast (group by day)
     const dailyMap = new Map();
-    data.list.forEach(item => {
+    data.list.forEach((item) => {
       const date = new Date(item.dt * 1000).toDateString();
       if (!dailyMap.has(date)) {
         dailyMap.set(date, []);
@@ -114,26 +132,29 @@ export const fetchForecastData = async (cityName, lat, lon) => {
       dailyMap.get(date).push(item);
     });
 
-    const dailyForecast = Array.from(dailyMap.entries()).slice(0, 7).map(([date, items]) => {
-      const temps = items.map(i => i.main.temp);
-      const humidities = items.map(i => i.main.humidity);
-      const windSpeeds = items.map(i => i.wind.speed);
-      const rains = items.map(i => i.rain?.['3h'] || 0);
-      
-      return {
-        date,
-        dt: items[0].dt,
-        temp_min: Math.min(...temps),
-        temp_max: Math.max(...temps),
-        temp_avg: temps.reduce((a, b) => a + b, 0) / temps.length,
-        humidity: humidities.reduce((a, b) => a + b, 0) / humidities.length,
-        description: items[Math.floor(items.length / 2)].weather[0].description,
-        icon: items[Math.floor(items.length / 2)].weather[0].icon,
-        wind_speed: windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length,
-        pop: Math.max(...items.map(i => i.pop || 0)),
-        rain: rains.reduce((a, b) => a + b, 0),
-      };
-    });
+    const dailyForecast = Array.from(dailyMap.entries())
+      .slice(0, 7)
+      .map(([date, items]) => {
+        const temps = items.map((i) => i.main.temp);
+        const humidities = items.map((i) => i.main.humidity);
+        const windSpeeds = items.map((i) => i.wind.speed);
+        const rains = items.map((i) => i.rain?.['3h'] || 0);
+
+        return {
+          date,
+          dt: items[0].dt,
+          temp_min: Math.min(...temps),
+          temp_max: Math.max(...temps),
+          temp_avg: temps.reduce((a, b) => a + b, 0) / temps.length,
+          humidity: humidities.reduce((a, b) => a + b, 0) / humidities.length,
+          description:
+            items[Math.floor(items.length / 2)].weather[0].description,
+          icon: items[Math.floor(items.length / 2)].weather[0].icon,
+          wind_speed: windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length,
+          pop: Math.max(...items.map((i) => i.pop || 0)),
+          rain: rains.reduce((a, b) => a + b, 0),
+        };
+      });
 
     const forecastData = {
       cityId: data.city.id,
@@ -146,7 +167,15 @@ export const fetchForecastData = async (cityName, lat, lon) => {
     setCachedData(cacheKey, forecastData);
     return forecastData;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch forecast data');
+    const status = error.response?.status;
+    if (status === 401) {
+      throw new Error(
+        'OpenWeatherMap API Unauthorized (401). Check your VITE_WEATHER_API_KEY.'
+      );
+    }
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch forecast data'
+    );
   }
 };
 
@@ -158,10 +187,11 @@ export const searchCities = async (query) => {
   if (cached) return cached;
 
   try {
-    const url = `${GEO_URL}/direct?q=${query}&limit=5&appid=${API_KEY}`;
+    const key = ensureApiKey();
+    const url = `${GEO_URL}/direct?q=${query}&limit=5&appid=${key}`;
     const response = await axios.get(url);
-    
-    const results = response.data.map(city => ({
+
+    const results = response.data.map((city) => ({
       id: `${city.lat}_${city.lon}`,
       name: city.name,
       country: city.country,
