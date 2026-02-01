@@ -1,130 +1,189 @@
+/* Theme-aware variables (fallbacks) */
+:root {
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 0, 0.06);
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --accent: #ffb020;
+  --shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: #111827;
+    --card-border: rgba(255, 255, 255, 0.04);
+    --text-primary: #f9fafb;
+    --text-muted: #9ca3af;
+    --accent: #ffcc4d;
+    --shadow: 0 6px 18px rgba(2, 6, 23, 0.6);
+  }
+}
+
+/* Prevent overflow and keep consistent sizing */
 .city-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  box-sizing: border-box; /* ensure padding included in size */
   position: relative;
-  min-height: 280px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px; /* increased padding */
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
+  gap: 10px; /* slightly larger gaps */
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  min-height: 200px; /* increased height */
+  max-height: 100%;
+  overflow: hidden; /* clip overflowing children */
 }
 
+/* keep hover/focus behavior but avoid layout shift */
+.city-card:focus,
 .city-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  outline: none;
+  z-index: 1;
 }
 
+/* favorite button fixed and not pushing layout */
 .favorite-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
+  top: 10px;
+  right: 10px;
+  background: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 18px;
+  line-height: 1;
   cursor: pointer;
-  padding: 0.2rem;
-  color: #ccc;
-  transition: color 0.2s;
-}
-
-.favorite-btn.active {
-  color: #ffd700;
+  color: var(--text-muted);
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 120ms ease, background 120ms ease;
+  z-index: 2;
 }
 
 .favorite-btn:hover {
-  color: #ffd700;
-  transform: scale(1.1);
+  color: var(--accent);
+  background: rgba(0, 0, 0, 0.04);
 }
 
+.favorite-btn.active {
+  color: var(--accent);
+}
+
+/* header with truncation for long names */
 .city-header {
-  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+}
+
+.name-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* enable text-overflow inside flex */
 }
 
 .city-name {
-  font-size: 1.5rem;
-  color: #333;
-  margin: 0 0 0.25rem 0;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* truncate long names */
 }
 
 .country {
-  font-size: 0.9rem;
-  color: #666;
-  padding: 0.2rem 0.5rem;
-  background: #f0f0f0;
-  border-radius: 10px;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Main weather row - icon fixed size so it can't push content */
 .weather-main {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin: 1rem 0;
-  flex: 1;
+  gap: 12px;
 }
 
 .weather-icon {
-  width: 100px;
-  height: 100px;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px; /* fixed space, won't grow/shrink awkwardly */
+  object-fit: contain;
+  filter: none;
+  opacity: 0.95;
 }
 
 .temperature {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #667eea;
-  margin-left: 0.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 0;
+  /* allow temperature to shrink if needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* Description: clamp to two lines to prevent overflow */
 .weather-description {
-  text-align: center;
-  color: #555;
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
-  text-transform: capitalize;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
 }
 
+/* Details row: allow items to wrap and shrink */
 .weather-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  border-top: 1px solid #e0e0e0;
-  padding-top: 1rem;
+  display: flex;
+  gap: 12px;
+  margin-top: auto; /* stick to bottom of card */
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* prevent overflow on narrow cards */
 }
 
 .detail-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-width: 0; /* allow children to shrink inside flex */
+  flex: 1 1 45%; /* let items wrap to next line on small widths */
 }
 
 .detail-icon {
-  font-size: 1.5rem;
+  font-size: 1.05rem;
 }
 
-.detail-label {
-  font-size: 0.85rem;
-  color: #666;
-}
-
-.detail-value {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-}
-
-@media (max-width: 480px) {
+/* Responsive adjustments */
+@media (max-width: 520px) {
   .city-card {
-    padding: 1rem;
+    padding: 12px;
+    min-height: 160px;
   }
-
-  .temperature {
-    font-size: 2.5rem;
-  }
-
   .weather-icon {
-    width: 80px;
-    height: 80px;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+  }
+  .temperature {
+    font-size: 1.25rem;
   }
 }
