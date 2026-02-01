@@ -7,6 +7,8 @@ import './Header.css';
 const Header = ({ onCitySelect }) => {
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isDark, setIsDark] = useState(false);
+
   const searchResults = useSelector((state) => state.weather.searchResults);
   const temperatureUnit = useSelector(
     (state) => state.settings.temperatureUnit
@@ -14,9 +16,13 @@ const Header = ({ onCitySelect }) => {
   const [showResults, setShowResults] = useState(false);
   const error = useSelector((state) => state.weather.error);
 
+  // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchTerm.length >= 2) {
+        // visible debug so user can see searches in console
+        // eslint-disable-next-line no-console
+        console.log('Dispatching searchCity for:', searchTerm);
         dispatch(searchCity(searchTerm));
         setShowResults(true);
       } else {
@@ -27,6 +33,21 @@ const Header = ({ onCitySelect }) => {
 
     return () => clearTimeout(timer);
   }, [searchTerm, dispatch]);
+
+  // Track system color scheme and update when it changes
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e) => setIsDark(!!e.matches);
+    setIsDark(!!mq.matches);
+    if (mq.addEventListener) mq.addEventListener('change', handleChange);
+    else mq.addListener(handleChange);
+    return () => {
+      if (mq.removeEventListener)
+        mq.removeEventListener('change', handleChange);
+      else mq.removeListener(handleChange);
+    };
+  }, []);
 
   const handleCitySelect = (city) => {
     onCitySelect(city);
@@ -40,7 +61,7 @@ const Header = ({ onCitySelect }) => {
   };
 
   return (
-    <header className='header'>
+    <header className={`header ${isDark ? 'header--dark' : 'header--light'}`}>
       <div className='header-content'>
         <h1 className='header-title'>🌤️ Weather Analytics Dashboard</h1>
 
@@ -48,6 +69,7 @@ const Header = ({ onCitySelect }) => {
           <div className='search-container'>
             <input
               type='text'
+              aria-label='Search cities'
               placeholder='Search cities...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -55,13 +77,14 @@ const Header = ({ onCitySelect }) => {
             />
 
             {showResults && (
-              <div className='search-results'>
+              <div className='search-results' role='listbox'>
                 {error ? (
                   <div className='search-error'>{error}</div>
                 ) : searchResults.length > 0 ? (
                   searchResults.map((city) => (
                     <div
                       key={city.id}
+                      role='option'
                       className='search-result-item'
                       onClick={() => handleCitySelect(city)}
                     >
@@ -79,7 +102,11 @@ const Header = ({ onCitySelect }) => {
             )}
           </div>
 
-          <button onClick={handleToggleUnit} className='unit-toggle'>
+          <button
+            onClick={handleToggleUnit}
+            className='unit-toggle'
+            aria-pressed={temperatureUnit !== 'celsius'}
+          >
             °{temperatureUnit === 'celsius' ? 'C' : 'F'}
           </button>
         </div>

@@ -1,4 +1,5 @@
 .header {
+  /* Default (light) header styles */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -6,6 +7,12 @@
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.header--dark {
+  /* Dark mode header override */
+  background: rgba(20, 20, 20, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
 }
 
 .header-content {
@@ -40,12 +47,29 @@
   border: 2px solid #667eea;
   font-size: 0.95rem;
   min-width: 250px;
+  background: #ffffff;
   color: #333;
+  caret-color: #333;
+}
+
+.header--dark .search-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  caret-color: #fff;
 }
 
 .search-input:focus {
   outline: none;
   border-color: #764ba2;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.header--dark .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .search-results {
@@ -62,6 +86,11 @@
   z-index: 1000;
 }
 
+.header--dark .search-results {
+  background: #111;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
 .search-result-item {
   padding: 0.8rem 1rem;
   cursor: pointer;
@@ -71,6 +100,14 @@
 
 .search-result-item:hover {
   background-color: #f5f5ff;
+}
+
+.header--dark .search-result-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.header--dark .search-result-item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .search-result-item:last-child {
@@ -83,9 +120,17 @@
   margin-bottom: 0.2rem;
 }
 
+.header--dark .city-name {
+  color: #fff;
+}
+
 .city-info {
   font-size: 0.85rem;
   color: #666;
+}
+
+.header--dark .city-info {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .unit-toggle {
