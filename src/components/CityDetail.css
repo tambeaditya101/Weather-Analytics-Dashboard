@@ -92,8 +92,9 @@
 
 /* SVG inside close button: centered and crisp */
 .detail-close-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
+  margin: -7px;
 }
 .detail-close-btn svg line {
   stroke: currentColor;
