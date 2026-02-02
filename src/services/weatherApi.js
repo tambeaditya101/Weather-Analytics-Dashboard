@@ -75,12 +75,18 @@ export const fetchWeatherData = async (cityName, lat, lon) => {
     setCachedData(cacheKey, weatherData);
     return weatherData;
   } catch (error) {
+    if (error.message.includes('Rate limit')) {
+      const cached = getCachedData(cacheKey);
+      if (cached) return cached;
+    }
+
     const status = error.response?.status;
     if (status === 401) {
       throw new Error(
         'OpenWeatherMap API Unauthorized (401). Check your VITE_WEATHER_API_KEY.'
       );
     }
+
     throw new Error(
       error.response?.data?.message || 'Failed to fetch weather data'
     );
@@ -167,14 +173,20 @@ export const fetchForecastData = async (cityName, lat, lon) => {
     setCachedData(cacheKey, forecastData);
     return forecastData;
   } catch (error) {
+    if (error.message.includes('Rate limit')) {
+      const cached = getCachedData(cacheKey);
+      if (cached) return cached;
+    }
+
     const status = error.response?.status;
     if (status === 401) {
       throw new Error(
         'OpenWeatherMap API Unauthorized (401). Check your VITE_WEATHER_API_KEY.'
       );
     }
+
     throw new Error(
-      error.response?.data?.message || 'Failed to fetch forecast data'
+      error.response?.data?.message || 'Failed to fetch weather data'
     );
   }
 };
@@ -203,6 +215,20 @@ export const searchCities = async (query) => {
     setCachedData(cacheKey, results);
     return results;
   } catch (error) {
-    throw new Error('Failed to search cities');
+    if (error.message.includes('Rate limit')) {
+      const cached = getCachedData(cacheKey);
+      if (cached) return cached;
+    }
+
+    const status = error.response?.status;
+    if (status === 401) {
+      throw new Error(
+        'OpenWeatherMap API Unauthorized (401). Check your VITE_WEATHER_API_KEY.'
+      );
+    }
+
+    throw new Error(
+      error.response?.data?.message || 'Failed to fetch weather data'
+    );
   }
 };
