@@ -16,6 +16,9 @@ const Header = ({ onCitySelect }) => {
   const [showResults, setShowResults] = useState(false);
   const error = useSelector((state) => state.weather.error);
 
+  // bounce animation state when user attempts invalid search (e.g., Enter with <2 chars)
+  const [bounce, setBounce] = useState(false);
+
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,10 +32,26 @@ const Header = ({ onCitySelect }) => {
         dispatch(clearSearchResults());
         setShowResults(false);
       }
-    }, 300);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [searchTerm, dispatch]);
+
+  // Handle pressing Enter to run immediate search or trigger bounce if term too short
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      if (searchTerm.length >= 2) {
+        dispatch(searchCity(searchTerm));
+        setShowResults(true);
+      } else {
+        // trigger bounce animation
+        setBounce(true);
+      }
+    }
+  };
+
+  // clear bounce after animation end (safety fallback)
+  const onBounceEnd = () => setBounce(false);
 
   // Track system color scheme and update when it changes
   useEffect(() => {
@@ -73,7 +92,9 @@ const Header = ({ onCitySelect }) => {
               placeholder='Search cities...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className='search-input'
+              className={`search-input ${bounce ? 'search-bounce' : ''}`}
+              onKeyDown={handleKeyDown}
+              onAnimationEnd={onBounceEnd}
             />
 
             {showResults && (
