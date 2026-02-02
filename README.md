@@ -105,10 +105,15 @@ Weather-Analytics-Dashboard/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── Header.jsx       # Header with search and unit toggle
+│   │   ├── Header.css       # Header styles
 │   │   ├── Dashboard.jsx    # Main dashboard with city cards
+│   │   ├── Dashboard.css    # Main dashboard styles
 │   │   ├── CityCard.jsx     # Individual city weather card
+│   │   ├── CityCard.css     # Individual city weather card styles
 │   │   ├── CityDetail.jsx   # Detailed city view
+│   │   ├── CityDetail.css   # Detailed city view styles
 │   │   └── WeatherCharts.jsx # Charts for weather trends
+│   │   └── WeatherCharts.css # Charts for weather trends styles
 │   ├── features/            # Redux slices
 │   │   ├── weatherSlice.js  # Weather data state management
 │   │   └── settingsSlice.js # User settings state management
@@ -118,6 +123,8 @@ Weather-Analytics-Dashboard/
 │   │   └── store.js         # Store setup
 │   ├── utils/               # Utility functions
 │   │   └── weatherUtils.js  # Weather-related utilities
+│   │   └── rateLimiter.js   # rate-limiter logic
+│   ├── apiCient.js          # custom api client
 │   ├── App.jsx              # Main App component
 │   ├── main.jsx             # Application entry point
 │   └── index.css            # Global styles
