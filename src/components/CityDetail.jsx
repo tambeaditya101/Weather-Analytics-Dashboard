@@ -13,12 +13,15 @@ import WeatherCharts from './WeatherCharts';
 const CityDetail = ({ city, onClose }) => {
   const dispatch = useDispatch();
 
-  // Consolidated selector (reduces re-renders)
-  const { forecast, temperatureUnit, loading } = useSelector((state) => ({
-    forecast: state.weather.forecasts?.[city?.id],
-    temperatureUnit: state.settings.temperatureUnit,
-    loading: state.weather.loading,
-  }));
+  // Use separate selectors to avoid returning a new object each render
+  const forecasts = useSelector((state) => state.weather.forecasts);
+  const temperatureUnit = useSelector(
+    (state) => state.settings.temperatureUnit
+  );
+  const loading = useSelector((state) => state.weather.loading);
+
+  // pick forecast for this city id (safe if city is undefined)
+  const forecast = city?.id ? forecasts?.[city.id] : undefined;
 
   // Defensive effect: only fetch when coords exist
   useEffect(() => {

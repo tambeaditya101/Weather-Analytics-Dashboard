@@ -6,11 +6,10 @@ import './CityCard.css';
 
 const CityCard = ({ weather, onClick }) => {
   const dispatch = useDispatch();
-  const { favorites = [], temperatureUnit = 'metric' } = useSelector(
-    (state) => ({
-      favorites: state.settings.favorites,
-      temperatureUnit: state.settings.temperatureUnit,
-    })
+  // select each value separately to avoid returning a new object each render
+  const favorites = useSelector((state) => state.settings.favorites);
+  const temperatureUnit = useSelector(
+    (state) => state.settings.temperatureUnit
   );
 
   const isFavorite = useMemo(

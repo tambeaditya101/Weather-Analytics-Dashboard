@@ -18,12 +18,10 @@ const Dashboard = ({ selectedCity }) => {
   const dispatch = useDispatch();
   const [detailCity, setDetailCity] = useState(null);
 
-  // Consolidated selector to reduce multiple subscriptions
-  const { favorites, currentWeather, loading } = useSelector((state) => ({
-    favorites: state.settings.favorites,
-    currentWeather: state.weather.currentWeather,
-    loading: state.weather.loading,
-  }));
+  // Use separate selectors to keep selectors pure and stable references
+  const favorites = useSelector((state) => state.settings.favorites);
+  const currentWeather = useSelector((state) => state.weather.currentWeather);
+  const loading = useSelector((state) => state.weather.loading);
 
   // Helper: dedupe cities by lat/lon (string key)
   const uniqueByLatLon = (cities = []) => {
