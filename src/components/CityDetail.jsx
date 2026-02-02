@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchForecast } from '../features/weatherSlice';
 import {
@@ -12,6 +12,7 @@ import WeatherCharts from './WeatherCharts';
 
 const CityDetail = ({ city, onClose }) => {
   const dispatch = useDispatch();
+  const contentRef = useRef(null);
 
   // Use separate selectors to avoid returning a new object each render
   const forecasts = useSelector((state) => state.weather.forecasts);
@@ -31,6 +32,19 @@ const CityDetail = ({ city, onClose }) => {
       dispatch(fetchForecast({ lat, lon }));
     }
   }, [dispatch, city?.coord?.lat, city?.coord?.lon, city?.lat, city?.lon]);
+
+  // Close on Escape and focus the panel for keyboard users
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.code === 'Escape') {
+        onClose();
+      }
+    };
+    // focus the content for accessibility (so Escape and other keys are predictable)
+    contentRef.current?.focus();
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   // Memoized safe values
   const display = useMemo(() => {
@@ -56,7 +70,7 @@ const CityDetail = ({ city, onClose }) => {
       aria-label={`${display.name} details`}
     >
       <div className='city-detail-backdrop' onClick={onClose} />
-      <div className='city-detail-content' tabIndex={-1}>
+      <div className='city-detail-content' tabIndex={-1} ref={contentRef}>
         <button
           className='detail-close-btn'
           onClick={onClose}
